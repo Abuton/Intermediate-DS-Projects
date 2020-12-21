@@ -1,7 +1,7 @@
 # # Import libraries
 try:
 	import sys, os
-	sys.path.append(os.path.abspath(os.path.join('Movie Recommendation System', '')))
+	sys.path.append(os.path.abspath(os.path.join('Movie Recommendation System')))
 
 	import pandas as pd
 	import streamlit as st
@@ -33,7 +33,7 @@ def load_data():
 	user_ratings_df = pd.pivot_table(movies_rating_df, index='userId', columns='movieId', values='rating')
 
 	# Matrix Factorization to get U x M
-	U, M = matrix_factorization.low_rank_matrix_factorization(user_ratings_df.values, num_features=11, regularization_amount=1.1)
+	U, M = matrix_factorization.low_rank_matrix_factorization(user_ratings_df.values, num_features=4, regularization_amount=1.1)
 
 
 	return movies_rating_df, movies_df, ratings, U, M, user_ratings_df
