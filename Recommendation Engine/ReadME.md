@@ -11,6 +11,7 @@ The approach were simple
 
 3. Movie Based Recommendation
 	Here, movies are recommended using a low rank matrix multiplication. The user input an id of movie he/she has previously seen and wants another movie similar to that. The steps include::
+	
 		a. Get features for movie
 		b. Subtract current movie features from every other movie features and take absolute value
 		c. Sum all features to get a 'total difference score' for each movie
