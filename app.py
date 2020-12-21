@@ -1,18 +1,22 @@
 # # Import libraries
 try:
+	import sys, os
+	sys.path.append(os.path.abspath(os.path.join('Movie Recommendation System', '')))
+
 	import pandas as pd
 	import streamlit as st
 	import numpy as np
 	import matrix_factorization
+
 except Exception as e:
 	st.write(f'Error loading dependencies {e}')
 
 @st.cache(allow_output_mutation=True)
 def load_data():
 	try:
-		movies_rating_df = pd.read_csv('data/user_ratings.csv')
-		ratings = pd.read_csv('data/user_ratings.csv')
-		movies_df = pd.read_csv('data/movies.csv')
+		movies_rating_df = pd.read_csv('Movie Recommendation System/data/user_ratings.csv')
+		ratings = pd.read_csv('Movie Recommendation System/data/user_ratings.csv')
+		movies_df = pd.read_csv('Movie Recommendation System/data/movies.csv')
 	except Exception as e:
 		st.write(f"Error reading data {e}")
 	movies_rating_df = movies_rating_df[['title', 'genres', 'userId', 'movieId', 'rating']]
