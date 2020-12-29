@@ -80,7 +80,7 @@ def upload_data():
 	try:
 		uploaded_file = st.file_uploader('Whatsapp chat dataset', type='txt')
 		if uploaded_file:
-			st.write('file uploaded successfully :joy:' )
+			st.write('file uploaded successfully :joy: ' )
 			wh_chat = pd.read_csv(uploaded_file, sep='\t', header=None)[0].tolist()
 			msgs = [] #message container
 			pos = 0 
