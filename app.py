@@ -115,6 +115,8 @@ def upload_data():
 			df = df[df['Content'] != ' <Media omitted>']
 			# remove all emoji
 			df['Content'] = df['Content'].apply(remove_emoji)
+			# drop unwanted contents
+			df = df[df['Content'] != 'Missing Text']
 			# add the chat length
 			df['chat_length'] = df['Content'].apply(len)
 			# add word count
