@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run wh_chart_analysis.py
+web: sh setup.sh && streamlit run app.py
