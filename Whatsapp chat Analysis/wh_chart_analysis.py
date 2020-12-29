@@ -191,4 +191,5 @@ def upload_data():
 		st.warning('Please Upload a txt file')
 
 if __name__ == '__main__':
+	st.title('Whatsapp Chat Analysis :eyes::clap:')
 	upload_data()
