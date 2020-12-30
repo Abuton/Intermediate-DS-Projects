@@ -131,8 +131,8 @@ def upload_data():
 			st.dataframe(df.head(20))
 
 		  # which sender sends the most message??
-			df.Sender.value_counts().head(25).plot(kind='bar', figsize=(13,7), title='Message Distribution amongest Senders')
-			plt.xlabel('Sender', fontsize=13);plt.ylabel('Message Count', fontsize=13); plt.xticks(rotation=0, fontsize=14);plt.show()
+			df.Sender.value_counts().head(15).plot(kind='bar', figsize=(13,7), title='Message Distribution amongest Senders')
+			plt.xlabel('Sender', fontsize=13);plt.ylabel('Message Count', fontsize=13); plt.xticks(rotation=90, fontsize=14);plt.show()
 			st.pyplot()
 
 			# chart length
@@ -161,7 +161,7 @@ def upload_data():
 
 			date_with_high_traffic = pd.DataFrame(df.groupby('Date')['Date'].count()).rename(columns={'Date':'msg_count'})
 			# st.write(date_with_high_traffic)
-			ax = px.line(date_with_high_traffic, x=date_with_high_traffic.index, y='msg_count', width=950, height=550,
+			ax = px.line(date_with_high_traffic, x=date_with_high_traffic.index, y='msg_count', width=700, height=500,
 							title='Timeline Trend of chats')
 			st.plotly_chart(ax)
 
@@ -169,7 +169,7 @@ def upload_data():
 			month_per_msg = df.groupby('month_name')['month_name'].count().reset_index(name='msg_count')
 			expander4.write(month_per_msg)
 
-			fig = px.pie(month_per_msg, values='msg_count', labels='month_name', width=900, height=700, hole=.3,
+			fig = px.pie(month_per_msg, values='msg_count', labels='month_name', width=700, height=500, hole=.3,
 			 						hover_data=['month_name'])
 			# fig.update_traces(textposition='inside', textinfo='label+percent', labelinfo='label')
 			fig.update_layout(showlegend=False, yaxis={'visible':False}, title='Montly Chat Record')
@@ -177,13 +177,14 @@ def upload_data():
 
 			st.write('Daily Chat Plot')
 			active_hr = df.groupby('day_name')['day_name'].count().reset_index(name='msg_count')
-			fig = px.pie(active_hr, values='msg_count', labels='day_name', width=900, height=700, hover_data=['day_name'])
+			fig = px.pie(active_hr, values='msg_count', labels='day_name', width=700, height=500, hover_data=['day_name'])
 			st.plotly_chart(fig)
 
 			# This will take a while to complete, you can go grab some snack or do some chores
 			df['clean_content'] = df['Content'].apply(text_process)
+			df = df.reset_index(drop=True)
 			expander5 = st.beta_expander('Check the clean data?')
-			expander5.dataframe(df.head(20))
+			expander5.dataframe(df.head(50))
 
 			draw_wordcloud(df['clean_content'])
 			st.pyplot()
