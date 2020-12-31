@@ -113,6 +113,8 @@ def upload_data():
 			st.write(f'There are {df.shape[0]} messages')
 			# drop the media
 			df = df[df['Content'] != ' <Media omitted>']
+			# get total message a user has sent
+			df['Sender'] = df['Sender'].str.strip()
 			# remove all emoji
 			df['Content'] = df['Content'].apply(remove_emoji)
 			# drop unwanted contents
@@ -192,13 +194,11 @@ def upload_data():
 
 			st.balloons()
 
-			# get total message a user has sent
-			users_list = [x.strip() for x in df['Sender'].unique()]
 			def get_total_msg(user):
 			  """ Return the total msgs 'user' has sent """
 			  try:
-			    if user in users_list:
-			        text = f"{user} has sent a total message of {len(df[df['Sender'] == ' '+user])}"
+			    if user in df['Sender'].unique().tolist():
+			      text = f"{user} has sent a total message of {len(df[df['Sender'] == user])}"
 			    else: st.info(f"{user} is not present in the data")
 			  except Exception as e : st.warning('error', e)
 
@@ -206,7 +206,6 @@ def upload_data():
 			st.write('Get User Total Message Sent')
 			user_name = st.text_input('Enter Username: ')
 			st.info(get_total_msg(user_name))
-
 	except:
 		st.warning('Please Upload a txt file')
 
