@@ -56,7 +56,7 @@ def read_file(file):
 def remove_emoji(text):
   return text.encode('ascii', 'ignore').decode('ascii')
 def word_count(s):
-    return len(s.split())
+  return len(s.split())
 
 def pie_chart(user):
   fig, ax = plt.subplots(figsize=(15, 8))
@@ -127,6 +127,7 @@ def upload_data():
 			df['day_name'] = df['Date'].dt.day_name()
 			df['month_name'] = df['Date'].dt.month_name()
 			df['year'] = df['Date'].dt.year
+			
 			# map the month and day
 			st.dataframe(df.head(20))
 
@@ -190,6 +191,22 @@ def upload_data():
 			st.pyplot()
 
 			st.balloons()
+
+			# get total message a user has sent
+			users_list = [x.strip() for x in df['Sender'].unique()]
+			def get_total_msg(user):
+			  """ Return the total msgs 'user' has sent """
+			  try:
+			    if user in users_list:
+			        text = f"{user} has sent a total message of {len(df[df['Sender'] == ' '+user])}"
+			    else: st.info(f"{user} is not present in the data")
+			  except Exception as e : st.warning('error', e)
+
+			  return text
+			st.write('Get User Total Message Sent')
+			user_name = st.text_input('Enter Username: ')
+			st.info(get_total_msg(user_name))
+
 	except:
 		st.warning('Please Upload a txt file')
 
