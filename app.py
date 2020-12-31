@@ -203,9 +203,9 @@ def upload_data():
 			  except Exception as e : st.warning('error', e)
 
 			  return text
-			st.write('Get User Total Message Sent')
-			user_name = st.text_input('Enter Username: ', value=df['Sender'].value_counts().index[0])
-			st.info(get_total_msg(user_name))
+			# st.write('Get User Total Message Sent')
+			# user_name = st.text_input('Enter Username: ', value=df['Sender'].value_counts().index[0])
+			# st.info(get_total_msg(user_name))
 	except:
 		st.warning('Please Upload a txt file')
 
