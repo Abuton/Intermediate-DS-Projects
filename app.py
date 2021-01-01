@@ -193,7 +193,7 @@ def upload_data(df):
 	st.dataframe(df.head(20))
 
   # which sender sends the most message??
-	df.Sender.value_counts().head(15).plot(kind='bar', figsize=(13,7), title='Message Distribution amongest Top 15 Senders')
+	df.Sender.value_counts().head(15).plot(kind='bar', figsize=(13,7), title=f'Message Distribution amongest Top Senders')
 	plt.xlabel('Sender', fontsize=13);plt.ylabel('Message Count', fontsize=13); plt.xticks(rotation=90, fontsize=14);plt.show()
 	st.pyplot()
 
@@ -263,11 +263,11 @@ if __name__ == '__main__':
 	if uploaded_file:
 		st.write('file uploaded successfully :joy: ' )
 		df = process_text(uploaded_file)
-		st.write('Get User Total Message Sent')
-		senders = df['Sender'].unique().tolist()
-		user = st.selectbox('Choose a User', senders)
+		# st.write('Get User Total Message Sent')
+		# senders = df['Sender'].unique().tolist()
+		# user = st.selectbox('Choose a User', senders)
 		# user_name = st.text_input('Enter Username: ', value=df['Sender'].value_counts().index[0])
-		st.info(get_total_msg(user, df))
+		# st.info(get_total_msg(user, df))
 
 		upload_data(df)
 	# except:
