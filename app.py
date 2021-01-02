@@ -114,6 +114,31 @@ def pie_chart(user):
   plt.tight_layout()
   plt.show()
 
+
+def remove_system_generated_msgs(chat):
+    """Remove system generated messages like::
+        1. +234 was added
+        2. +234 left etc
+    """
+    # print(len(chat))
+    # was added
+    chat = [line for line in chat if "added" not in line]
+    # was removed
+    chat = [line for line in chat if "removed" not in line]
+    # left
+    chat = [line for line in chat if "left" not in line]
+    # joined
+    chat = [line for line in chat if "joined using this" not in line]
+    # deleted
+    chat = [line for line in chat if 'message was deleted' not in line]
+    # remove empty strings
+    chat = [line for line in chat if line]
+    # too long msgs
+    chat = [line for line in chat if len(line.split()) < 210]
+    # print(len(chat))
+    
+    return chat
+
 def process_text(uploaded_file):
 	"""
 	process the uploaded chat data by removind unwanted
@@ -121,10 +146,14 @@ def process_text(uploaded_file):
 	args: uploaded_file: whatsapp chat data
 	return: adataframe well formatted
 	"""
-	wh_chat = pd.read_csv(uploaded_file, sep='\t', header=None)[0].tolist()
+	header = [0]
+	wh_chat = pd.read_csv(uploaded_file, sep='\n', header=None, error_bad_lines=False, names=header, 
+			converters={h:str for h in header})[0][:30000].tolist() 
+
+	cleaned_wh_chat = remove_system_generated_msgs(wh_chat)
 	msgs = [] #message container
 	pos = 0 
-	for line in wh_chat:
+	for line in cleaned_wh_chat:
 		if re.findall("\A\d+[/]", line):
 			msgs.append(line)
 			pos += 1
@@ -138,7 +167,12 @@ def process_text(uploaded_file):
 		# extract date
 		date = [msgs[i].split(',')[0] for i in range(len(msgs))]
 		# extract user
-		name = [msgs[i].split('-')[1].split(':')[0] for i in range(len(msgs))]
+		name = []
+		for i in range(len(msgs)):
+			try:
+				name.append(msgs[i].split('-')[1].split(':')[0])
+			except Exception as e:
+			  name.append('Empty')
 		# extract msgs (content)
 		content = []
 		for i in range(len(msgs)):
@@ -146,7 +180,7 @@ def process_text(uploaded_file):
 				content.append(msgs[i].split(':')[2])
 			except IndexError:
 				content.append('Missing Text')
-				# convert to dataframe
+	# convert to dataframe
 	df = pd.DataFrame(list(zip(date, time, name, content)), columns = ['Date', 'Time', 'Sender', 'Content'])
 	# drop
 	df.drop(0, axis=0, inplace=True)
@@ -155,6 +189,7 @@ def process_text(uploaded_file):
 	df = df[df['Content'] != ' <Media omitted>']
 	# get total message a user has sent
 	df['Sender'] = df['Sender'].str.strip()
+	df = df[df['Sender'] != 'Empty']
 	# remove all emoji
 	df['Content'] = df['Content'].apply(remove_emoji)
 	# drop unwanted contents
