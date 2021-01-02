@@ -148,7 +148,7 @@ def process_text(uploaded_file):
 	"""
 	header = [0]
 	wh_chat = pd.read_csv(uploaded_file, sep='\n', header=None, error_bad_lines=False, names=header, 
-			converters={h:str for h in header})[0][:30000].tolist() 
+			converters={h:str for h in header})[0].tolist() 
 
 	cleaned_wh_chat = remove_system_generated_msgs(wh_chat)
 	msgs = [] #message container
