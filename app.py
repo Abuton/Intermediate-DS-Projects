@@ -115,12 +115,15 @@ def pie_chart(user):
   plt.show()
 
 
-def remove_system_generated_msgs(chat):
+def remove_system_generated_msgs(uploaded_file):
     """Remove system generated messages like::
         1. +234 was added
         2. +234 left etc
     """
-    # print(len(chat))
+    header = [0]
+    chat = pd.read_csv(uploaded_file, sep='\n', header=None, error_bad_lines=False, names=header, 
+			converters={h:str for h in header})[0].tolist() 
+
     # was added
     chat = [line for line in chat if "added" not in line]
     # was removed
@@ -139,21 +142,18 @@ def remove_system_generated_msgs(chat):
     
     return chat
 
-def process_text(uploaded_file):
+def process_text(wh_chat):
 	"""
-	process the uploaded chat data by removind unwanted
+	process the uploaded chat data by removing unwanted
 	entries and returns a dataframe
 	args: uploaded_file: whatsapp chat data
 	return: adataframe well formatted
 	"""
-	header = [0]
-	wh_chat = pd.read_csv(uploaded_file, sep='\n', header=None, error_bad_lines=False, names=header, 
-			converters={h:str for h in header})[0].tolist() 
-
-	cleaned_wh_chat = remove_system_generated_msgs(wh_chat)
+	
+	# cleaned_wh_chat = remove_system_generated_msgs(wh_chat)
 	msgs = [] #message container
 	pos = 0 
-	for line in cleaned_wh_chat:
+	for line in wh_chat:
 		if re.findall("\A\d+[/]", line):
 			msgs.append(line)
 			pos += 1
@@ -297,6 +297,7 @@ if __name__ == '__main__':
 	uploaded_file = st.file_uploader('Whatsapp chat dataset', type='txt')
 	if uploaded_file:
 		st.write('file uploaded successfully :joy: ' )
+		uploaded_file = remove_system_generated_msgs(uploaded_file)
 		df = process_text(uploaded_file)
 		upload_data(df)
 
