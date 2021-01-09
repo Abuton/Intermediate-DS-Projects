@@ -17,3 +17,6 @@ The approach were simple
 		c. Sum all features to get a 'total difference score' for each movie
 		d. Create a new column with difference score for each movie
 		e. Sort movies from least different to most different and show results
+	
+	
+cheers
