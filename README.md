@@ -10,4 +10,7 @@ During the 5 days Sprint,
 * Used Code Refactoring to reduce latency
 * Practice Model Deployment and Monitoring
 
+
+<img src='masked_wordcloud.jpg' alt='Word cloud Image'/>
+
 do check it out and let me know i can improve thank you
