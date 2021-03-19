@@ -269,7 +269,7 @@ def upload_data(df):
 	fig = px.pie(month_per_msg, values='msg_count', labels='month_name', width=700, height=500, hole=.3,
 	 						hover_data=['month_name'])
 	# fig.update_traces(textposition='inside', textinfo='label+percent', labelinfo='label')
-	fig.update_layout(showlegend=False, yaxis={'visible':False}, title='Montly Chat Record')
+	fig.update_layout(showlegend=False, yaxis={'visible':False}, title='Monthly Chat Record')
 	st.plotly_chart(fig)
 
 	st.write('Daily Chat Plot')
