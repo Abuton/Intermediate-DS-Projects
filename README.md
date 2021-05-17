@@ -3,14 +3,14 @@ I went on a 5 days sprint of completing some of my previously started projects a
 
 I built a Whatsapp chat Analysis tool that enables whatsapp users to upload their whatsapp chat with their contacts and get some insights into how many messages is sent by them, how many message per day and message per month. currently hosted on Heroku. <a href="https://www.whatsapp-chat-analysis.heroku.com">here</a>
 
-performed analysis on click through rate:: data gotten from kaggle
+Performed analysis on click through rate for a retail Business
 
 During the 5 days Sprint,
-* i master the art of using OOP in my code (Used Functions and classes alot in the code)
-* Used Code Refactoring to reduce latency
-* Practice Model Deployment and Monitoring
+* I employ and tested the concept of OOP in my codebase (Used Functions and classes alot in the code)
+* Used Code Refactoring to reduce latency as well as codebase size
+* Practice Model Deployment and Monitoring isng PAAS **(Heroku, Streamlit)**
 
 
 <img src='masked_wordcloud.jpg' alt='Word cloud Image'/>
 
-do check it out and let me know i can improve thank you
+If you like what you see, Do leave a star Thank You
