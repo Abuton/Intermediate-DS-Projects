@@ -316,7 +316,6 @@ def upload_data(df):
 
 	draw_wordcloud(df['clean_content'])
 	st.pyplot()
-
 	st.balloons()
 
 
