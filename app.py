@@ -1,6 +1,7 @@
 # import dependencies
 
 import streamlit as st # for visuals Web interface
+import streamlit.components.v1 as components # to embed html 
 import pandas as pd # dataframes well formated data
 import matplotlib.pyplot as plt # for ploting
 import re # regex Expr
@@ -16,7 +17,7 @@ st.set_page_config(
   page_icon = '✅',
   layout="wide"
 )
-
+# 
 
 stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll",
  "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 
