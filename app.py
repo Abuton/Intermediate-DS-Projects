@@ -332,13 +332,4 @@ if __name__ == '__main__':
 		df = process_text(uploaded_file)
 		upload_data(df)
 
-		# st.write('Get User Total Message Sent')
-		# senders = df['Sender'].unique().tolist()
-		# user = st.selectbox('Choose a User', senders)
-		# user_name = st.text_input('Enter Username: ', value=df['Sender'].value_counts().index[0])
-		# st.info(get_total_msg(user, df))
-
-	# except:
-	# 	st.warning('Please Upload a txt file')
-
 		
