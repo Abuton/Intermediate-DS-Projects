@@ -8,8 +8,15 @@ import plotly.express as px #interactive plots
 import string # for string manipulation
 from wordcloud import WordCloud # proxy topic modelling
 
-plt.style.use('ggplot') # style of plot
+plt.style.use('fivethirtyeight') # style of plot
 st.set_option('deprecation.showPyplotGlobalUse', False) # silent warnings
+
+st.set_page_config(
+  page_title = 'Streamlit Whatsapp Chat Data Dashboard',
+  page_icon = '✅',
+  layout="wide"
+)
+
 
 stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll",
  "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 
@@ -37,8 +44,8 @@ def draw_wordcloud(msgs):
 		highest font value 
 	"""
 	allWords = ' '.join([twts for twts in msgs])
-	wordCloud = WordCloud(width=350, height=170, random_state=21, max_words=190, mode='RGBA',
-                      max_font_size=150, stopwords=stopwords, scale=9,
+	wordCloud = WordCloud(width=500, height=250, random_state=21, max_words=200, mode='RGBA',
+                      max_font_size=170, stopwords=stopwords, scale=9,
                         min_word_length=4).generate(allWords)
 	plt.figure(figsize=(20, 12))
 	plt.imshow(wordCloud, interpolation="bilinear")
@@ -49,7 +56,7 @@ def draw_wordcloud(msgs):
 
 	################################### TEXT PREPROCESSING #########################################################
 
-def text_process(mess):
+def text_process(message):
   """
   Takes in a string of text, then performs the following:
   1. Remove all punctuation
@@ -60,7 +67,7 @@ def text_process(mess):
   return: cleaned chat text
   """
   # Check characters to see if they are in punctuation
-  nopunc = [char for char in mess if char not in string.punctuation]
+  nopunc = [char for char in message if char not in string.punctuation]
 
   # Join the characters again to form the string.
   nopunc = ''.join(nopunc)
@@ -146,8 +153,12 @@ def process_text(wh_chat):
 	"""
 	process the uploaded chat data by removing unwanted
 	entries and returns a dataframe
+
 	args: uploaded_file: whatsapp chat data
+	-----
+
 	return: adataframe well formatted
+	-------
 	"""
 	
 	# cleaned_wh_chat = remove_system_generated_msgs(wh_chat)
@@ -170,7 +181,7 @@ def process_text(wh_chat):
 		name = []
 		for i in range(len(msgs)):
 			try:
-				name.append(msgs[i].split('-')[1].split(':')[0])
+			  name.append(msgs[i].split('-')[1].split(':')[0])
 			except Exception as e:
 			  name.append('Empty')
 		# extract msgs (content)
@@ -180,6 +191,7 @@ def process_text(wh_chat):
 				content.append(msgs[i].split(':')[2])
 			except IndexError:
 				content.append('Missing Text')
+
 	# convert to dataframe
 	df = pd.DataFrame(list(zip(date, time, name, content)), columns = ['Date', 'Time', 'Sender', 'Content'])
 	# drop
@@ -207,17 +219,22 @@ def process_text(wh_chat):
 
 	return df
 	
-def get_total_msg(user, df):
-  """ Return the total msgs 'user' has sent 
-			args: user
-						df
-			return pie chart plot
+def get_total_msg(user:str, df:pd.DataFrame):
+  """ 
+  Return the total msgs 'user' has sent 
+
+  Args: user
+  ----				
+  Returns:
+  --------
+  text
   """
 
   try:
     if user in df['Sender'].unique().tolist():
       text = f"{user} has sent a total message of {len(df[df['Sender'] == user])}"
     else: st.info(f"{user} is not present in the data")
+
   except Exception as e : st.warning('error', e)
 
   return text
@@ -227,55 +244,69 @@ def upload_data(df):
 	# map the month and day
 	st.dataframe(df.head(20))
 
-  # which sender sends the most message??
-	df.Sender.value_counts().head(15).plot(kind='bar', figsize=(13,7), title=f'Message Distribution amongest Top Senders')
-	plt.xlabel('Sender', fontsize=13);plt.ylabel('Message Count', fontsize=13); plt.xticks(rotation=90, fontsize=14);plt.show()
-	st.pyplot()
+	top_senders, msg_length, msg_per_month = st.beta_columns(3)
+    # which sender sends the most message??
+	with top_senders:
+		st.write('Top Message Senders')
+		df.Sender.value_counts().head(15).plot(kind='bar', figsize=(20, 10), title=f'Message Distribution amongest Top Senders')
+		plt.xlabel('Sender', fontsize=13);plt.ylabel('Message Count', fontsize=13); plt.xticks(rotation=90, fontsize=14);plt.show()
+		st.pyplot()
 
 	# chart length
-	df.chat_length.plot.hist(bins=70, figsize=(14, 7), title='chat length distribution')
-	plt.xlabel('Chat character counts', fontsize=13);plt.show()
-	st.pyplot()
+	with msg_length:
+		st.write('Message Character Distribution Length')
+		df.chat_length.plot.hist(bins=70, figsize=(20, 10), title='message length distribution based on number of character')
+		plt.xlabel('Chat character counts', fontsize=13);plt.show()
+		st.pyplot()
 
 	# Average per user?
 	top25_user = df['Sender'].value_counts().index[:25]
 	for i in top25_user:
 	  st.write(f"Average character per message for sender {i} is , {df[df['Sender'] == i]['chat_length'].mean().round(2)}")
 
-	st.write('Top User chat by Month')
-	df[df['Sender']==top25_user[0]].hist(column='chat_length', by='month_name', bins=50, figsize=(18,7));
-	st.pyplot()
+	# chat histogram per month
+	with msg_per_month:
+		st.write('Top User chat by Month')
+		df[df['Sender']==top25_user[0]].hist(column='chat_length', by='month_name', bins=50, figsize=(20,10));
+		st.pyplot()
 
-	expander1 = st.beta_expander("how many messages are sent on a monthly basis?")
+	expander1 = st.beta_expander("How many messages are sent on a monthly basis?")
 	st.write("")
 	expander1.dataframe(pd.DataFrame(df.groupby('month_name')['month_name'].count().sort_values(ascending=False)).rename(columns={'month_name':'msg_count'}))
 
-	expander2 = st.beta_expander("how many messages per day")
+	expander2 = st.beta_expander("How many messages per day")
 	expander2.dataframe(pd.DataFrame(df.groupby('day_name')['day_name'].size().sort_values(ascending=False)).rename(columns={'day_name':'msg_count'}))
 
 	expander3 = st.beta_expander("per year and month distribution of messages")
 	expander3.dataframe(pd.DataFrame(df.groupby(['year', 'month_name'])['day_name'].size().sort_values(ascending=False)).rename(columns={'day_name':'msg_count'}))
 
-	date_with_high_traffic = pd.DataFrame(df.groupby('Date')['Date'].count()).rename(columns={'Date':'msg_count'})
-	# st.write(date_with_high_traffic)
-	ax = px.line(date_with_high_traffic, x=date_with_high_traffic.index, y='msg_count', width=700, height=500,
-					title='Timeline Trend of chats')
-	st.plotly_chart(ax)
-
+	
 	expander4 = st.beta_expander('Montly chat record ')
 	month_per_msg = df.groupby('month_name')['month_name'].count().reset_index(name='msg_count')
 	expander4.write(month_per_msg)
 
-	fig = px.pie(month_per_msg, values='msg_count', labels='month_name', width=700, height=500, hole=.3,
-	 						hover_data=['month_name'])
-	# fig.update_traces(textposition='inside', textinfo='label+percent', labelinfo='label')
-	fig.update_layout(showlegend=False, yaxis={'visible':False}, title='Monthly Chat Record')
-	st.plotly_chart(fig)
+	daily_chat, monthly_chat, time_trend = st.beta_columns(3)
 
-	st.write('Daily Chat Plot')
-	active_hr = df.groupby('day_name')['day_name'].count().reset_index(name='msg_count')
-	fig = px.pie(active_hr, values='msg_count', labels='day_name', width=700, height=500, hover_data=['day_name'])
-	st.plotly_chart(fig)
+	with time_trend:
+		date_with_high_traffic = pd.DataFrame(df.groupby('Date')['Date'].count()).rename(columns={'Date':'msg_count'})
+		# st.write(date_with_high_traffic)
+		ax = px.line(date_with_high_traffic, x=date_with_high_traffic.index, y='msg_count', title='Timeline Trend of chats')
+		st.plotly_chart(ax)
+
+	with monthly_chat:
+		fig = px.pie(month_per_msg, values='msg_count', names="month_name", labels='month_name', hole=.3, hover_data=['month_name'])
+		fig.update_traces(textposition='inside', textinfo='label+percent',)
+		fig.layout.width = None; fig.layout.height = None
+		fig.update_layout(showlegend=False, yaxis={'visible':False}, title='Monthly Chat Record')
+		st.plotly_chart(fig)
+
+	with daily_chat:
+		active_hr = df.groupby('day_name')['day_name'].count().reset_index(name='msg_count')
+		fig = px.pie(active_hr, values='msg_count', labels='day_name', names="day_name", hole=.3, hover_data=['day_name'])
+		fig.update_traces(textposition='inside', textinfo='label+percent',)
+		fig.layout.width = None; fig.layout.height = None
+		fig.update_layout(showlegend=False, yaxis={'visible':False}, title='Daily Chat Record')
+		st.plotly_chart(fig)
 
 	# This will take a while to complete, you can go grab some snack or do some chores
 	df['clean_content'] = df['Content'].apply(text_process)
