@@ -6,11 +6,10 @@ I built a Whatsapp chat Analysis tool that enables whatsapp users to upload thei
 Performed analysis on click through rate for a retail Business
 
 During the 5 days Sprint,
-* I employ and tested the concept of OOP in my codebase (Used Functions and classes alot in the code)
+* I utilized and tested the concept of OOP in my codebase (Used Functions and classes alot in the code)
 * Used Code Refactoring to reduce latency as well as codebase size
-* Practice Model Deployment and Monitoring isng PAAS **(Heroku, Streamlit)**
+* Practice Model Deployment and Monitoring uisng PAAS **(Heroku, Streamlit)**
 
 
 <img src='masked_wordcloud.jpg' alt='Word cloud Image'/>
 
-If you like what you see, Do leave a star Thank You
